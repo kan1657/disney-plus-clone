@@ -32,7 +32,7 @@ function Header() {
           <span>series</span>
         </a>
       </NavMenu>
-      <UserImg src="/images/kan.jpg" />
+      <UserImg src="/images/kan.jpeg" />
     </Nav>
   );
 }

@@ -1,8 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import styled from "styled-components";
+import { auth, provider } from "../firebase";
 
 function Header() {
+  const handleAuth = () => {
+    auth
+      .signInWithPopup(provider)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => alert(error.message));
+  };
   return (
     <Nav>
       <Logo src="/images/logo.svg" />
@@ -32,7 +41,7 @@ function Header() {
           <span>series</span>
         </a>
       </NavMenu>
-      <UserImg src="/images/kan.jpeg" />
+      <UserImg src="/images/kan.jpeg" onclick={handleAuth} />
     </Nav>
   );
 }

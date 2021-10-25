@@ -35,11 +35,11 @@ function Detail() {
             </ImageTitle>
             <Controls>
               <PlayButton>
-                <img src="images/play-icon-black.png" />
+                <img src="/images/play-icon-black.png" />
                 <span>PLAY</span>
               </PlayButton>
               <TrailerButton>
-                <img src="images/play-icon-white.png" />
+                <img src="/images/play-icon-white.png" />
                 <span>Trailer</span>
               </TrailerButton>
               <AddButton>

@@ -1,47 +1,99 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { auth, provider } from "../firebase";
+import { useHistory } from "react-router-dom";
+import {
+  selectUserName,
+  selectUserPhoto,
+  setUserLogin,
+  setSignOut,
+} from "../features/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function Header() {
-  const handleAuth = () => {
-    auth
-      .signInWithPopup(provider)
-      .then((result) => {
-        console.log(result);
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const userName = useSelector(selectUserName);
+  const userPhoto = useSelector(selectUserPhoto);
+
+  const setUser = (user) => {
+    dispatch(
+      setUserLogin({
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoURL,
       })
-      .catch((error) => alert(error.message));
+    );
   };
+  useEffect(() => {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        setUser(user);
+        history.push("/");
+      }
+    });
+  }, [userName]);
+
+  const signIn = () => {
+    auth.signInWithPopup(provider).then((result) => {
+      let user = result.user;
+      dispatch(
+        setUserLogin({
+          name: user.displayName,
+          email: user.email,
+          photo: user.photoURL,
+        })
+      );
+      history.push("/");
+    });
+  };
+
+  const signOut = () => {
+    auth.signOut().then(() => {
+      dispatch(setSignOut());
+      history.push("/login");
+    });
+  };
+
   return (
     <Nav>
       <Logo src="/images/logo.svg" />
-      <NavMenu>
-        <a>
-          <img src="/images/home-icon.svg" alt="home-icon" />
-          <span>home</span>
-        </a>
-        <a>
-          <img src="/images/search-icon.svg" alt="search-icon" />
-          <span>search</span>
-        </a>
-        <a>
-          <img src="/images/watchlist-icon.svg" alt="watchlist-icon" />
-          <span>watchlist</span>
-        </a>
-        <a>
-          <img src="/images/original-icon.svg" alt="original-icon" />
-          <span>originals</span>
-        </a>
-        <a>
-          <img src="/images/movie-icon.svg" alt="movie-icon" />
-          <span>originals</span>
-        </a>
-        <a>
-          <img src="/images/series-icon.svg" alt="serie-icon" />
-          <span>series</span>
-        </a>
-      </NavMenu>
-      <UserImg src="/images/kan.jpeg" onclick={handleAuth} />
+      {!userName ? (
+        <LoginContainer>
+          <Login onClick={signIn}>Login</Login>
+        </LoginContainer>
+      ) : (
+        <>
+          <NavMenu>
+            <a>
+              <img src="/images/home-icon.svg" alt="home-icon" />
+              <span>home</span>
+            </a>
+            <a>
+              <img src="/images/search-icon.svg" alt="search-icon" />
+              <span>search</span>
+            </a>
+            <a>
+              <img src="/images/watchlist-icon.svg" alt="watchlist-icon" />
+              <span>watchlist</span>
+            </a>
+            <a>
+              <img src="/images/original-icon.svg" alt="original-icon" />
+              <span>originals</span>
+            </a>
+            <a>
+              <img src="/images/movie-icon.svg" alt="movie-icon" />
+              <span>originals</span>
+            </a>
+            <a>
+              <img src="/images/series-icon.svg" alt="serie-icon" />
+              <span>series</span>
+            </a>
+          </NavMenu>
+          <UserImg src={userPhoto} onClick={signOut} />
+        </>
+      )}
     </Nav>
   );
 }
@@ -110,4 +162,27 @@ const UserImg = styled.img`
   height: 48px;
   border-radius: 50%;
   cursor: pointer;
+`;
+
+const Login = styled.div`
+  border: 1px solid #f9f9f9;
+  padding: 8px 16px;
+  border-radius: 4px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background-color: rgba(0, 0, 0, 0.6);
+  transition: alll 0.2s ease 0s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f9f9f9;
+    color: #000;
+    border-color: transparent;
+  }
+`;
+
+const LoginContainer = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
 `;

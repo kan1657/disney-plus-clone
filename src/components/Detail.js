@@ -18,10 +18,14 @@ function Detail() {
           setMovie(doc.data());
         } else {
           //redirect to homepage
+          console.log("no such document in firebase ");
         }
+      })
+      .catch((error) => {
+        console.log("Error getting document: ", error);
       });
-  }, []);
-  console.log("movie", movie);
+  }, [id]);
+
   return (
     <div>
       <Container>

@@ -6,8 +6,8 @@ import { useHistory } from "react-router-dom";
 import {
   selectUserName,
   selectUserPhoto,
-  setUserLogin,
-  setSignOut,
+  setUserLoginDetails,
+  setSignOutState,
 } from "../features/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -19,7 +19,7 @@ function Header() {
 
   const setUser = (user) => {
     dispatch(
-      setUserLogin({
+      setUserLoginDetails({
         name: user.displayName,
         email: user.email,
         photo: user.photoURL,
@@ -39,7 +39,7 @@ function Header() {
     auth.signInWithPopup(provider).then((result) => {
       let user = result.user;
       dispatch(
-        setUserLogin({
+        setUserLoginDetails({
           name: user.displayName,
           email: user.email,
           photo: user.photoURL,
@@ -51,7 +51,7 @@ function Header() {
 
   const signOut = () => {
     auth.signOut().then(() => {
-      dispatch(setSignOut());
+      dispatch(setSignOutState());
       history.push("/login");
     });
   };
